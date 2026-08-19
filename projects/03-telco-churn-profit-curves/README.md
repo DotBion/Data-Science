@@ -113,16 +113,19 @@ $813,000** on the same number of customers. Same model, same budget, better rank
 | Decision tree (depth 6, min leaf 91) | 0.833 cross-validated |
 | Random forest (default) | 0.805 |
 
-| Targeting policy | Profit |
-|---|---|
-| Budgeted top 25% | baseline |
-| Profit-curve optimum (~42%) | substantially higher |
-| Optimum, ranked by individualised expected value | higher still |
+On the 1,407-customer test set:
 
-Against a random-targeting baseline of the same size, scaled to a 100,000-customer
-base, the model's advantage runs into the millions of dollars — the version of the
-result you would put in a performance review, with the scaling assumption stated out
-loud.
+| Targeting policy | Customers targeted | Profit |
+|---|---|---|
+| Fixed 0.30 probability threshold | 37.6% | ~$112,700 |
+| Profit-curve optimum | 42.4% | **~$114,900** |
+
+The budgeted 25% falls short of the peak on that curve, which is the substance of the
+recommendation. Ranking by individualised expected value rather than by probability
+alone adds roughly another third on top, and against a random-targeting baseline of the
+same size — scaled to a 100,000-customer book — the model's advantage runs into the
+millions. Those last two figures come from cells with the scale inconsistencies noted
+below, so treat their direction as sound and their magnitude as indicative.
 
 ## What I learned
 

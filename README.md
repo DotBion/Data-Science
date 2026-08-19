@@ -19,7 +19,7 @@ repo spends more effort on the profit curve than on the classifier.
 
 | # | Project | Problem | Data | Model | Headline result |
 |---|---------|---------|------|-------|-----------------|
-| 01 | [College graduation rates](projects/01-college-graduation-rate-regression) | Predict a college's graduation rate from its admissions and finance profile | 777 US colleges, 18 features | Linear regression | Test RMSE 13.3 points, R² 0.39 — and a lesson in why that is a weak model |
+| 01 | [College graduation rates](projects/01-college-graduation-rate-regression) | Predict a college's graduation rate from its admissions and finance profile | 777 US colleges, 17 predictors | Linear regression | Test RMSE 13.3 points, R² 0.39 — and a lesson in why that is a weak model |
 | 02 | [Patient no-shows](projects/02-patient-no-show-prediction) | Predict which patients skip their appointment, so a clinic can staff on-demand doctors | 110,527 Brazilian clinic appointments | Decision tree | 79.9% test accuracy, plus a history feature built from each patient's own past |
 | 03 | [Telco churn and retention targeting](projects/03-telco-churn-profit-curves) | Decide which expiring customers get a $200 retention offer | 7,032 telecom customers | Tuned tree, L1 logistic regression, random forest | AUC 0.83, and a profit curve arguing for targeting ~42% of customers rather than the budgeted 25% |
 | 04 | [Movie review sentiment](projects/04-movie-review-sentiment) | Classify review text as positive or negative | 19,999 labelled movie reviews | TF-IDF + logistic regression, XGBoost | AUC 0.927, plus an error analysis that traced the model's worst miss to a sarcastic review |
