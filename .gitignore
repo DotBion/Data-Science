@@ -172,3 +172,6 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Datasets are downloaded at runtime or fetched from the links in each project README
+*.csv
