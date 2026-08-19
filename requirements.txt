@@ -1,0 +1,23 @@
+# Dependencies for the notebooks in projects/.
+# Originally developed on Google Colab (Python 3.11); these floors reflect the
+# APIs the notebooks actually rely on.
+
+# Core data handling and plotting
+pandas>=2.0
+numpy>=1.24
+matplotlib>=3.7
+seaborn>=0.12
+
+# Modelling
+# 1.4 is the floor: the regression notebook uses metrics.root_mean_squared_error.
+scikit-learn>=1.4
+xgboost>=2.0
+
+# Text processing (project 04)
+nltk>=3.8
+
+# Model explainability (project 04)
+eli5>=0.13
+
+# Notebook environment
+jupyterlab>=4.0
