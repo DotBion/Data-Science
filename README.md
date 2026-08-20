@@ -60,7 +60,7 @@ working directory; the rest download their data at runtime.
 Project 04 additionally needs a few NLTK corpora, which its first cell downloads:
 `punkt`, `punkt_tab`, `stopwords`, `wordnet`, `omw-1.4`, and `vader_lexicon`.
 
-## A note on honesty
+## P.S
 
 These were coursework notebooks before they were a portfolio, and I have not gone
 back and quietly fixed them. Where a notebook contains a bug, an unanswered
