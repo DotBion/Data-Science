@@ -38,8 +38,8 @@ records:
 | `TimeInAdvance` < 0 | 5 | Appointment dated before it was booked |
 | `Handicap` > 1 | 199 | Documented as a 0/1 flag, but contains values up to 4 |
 
-204 rows in total. There are no missing values anywhere in the dataset, which is
-exactly why this step matters: `isna().sum()` returning all zeros tells you nothing
+205 rows in total — the notebook prints 204, which is wrong twice over (see **Known
+issues**). There are no missing values anywhere in the dataset, which is exactly why this step matters: `isna().sum()` returning all zeros tells you nothing
 about whether the values that *are* present make sense.
 
 ### Taming a high-cardinality categorical
@@ -105,11 +105,20 @@ These are real defects in the notebook, left in place rather than silently patch
   reads backwards, and `PreviousNoShows` is really "previous attendances".
 - **Rows flagged were not all dropped.** The 199 `Handicap > 1` rows were counted and
   reported but never actually filtered out; only the 5 negative `TimeInAdvance` rows
-  and the negative-age row were removed.
+  and the negative-age row were removed. **6** rows actually leave the dataframe, not
+  204.
+- **The "Total rows removed: 204" figure is itself wrong.** The three counts sum to
+  205, not 204. The notebook reaches 204 because the cells were run out of order —
+  execution counts show the negative-age filter ran at #29, before the recount at #32
+  reset `count_negative_ages` to 0 — so the summing cell adds a stale zero. Re-running
+  the notebook top to bottom does not reproduce the printed number.
 - **Four questions are unanswered** — the `max_depth` sweep from 2 to 50 scored by F1,
   the labelled confusion matrix with precision and recall, the feature-importance
   discussion, and the threshold-tuning exercise. The empty cells are still in the
   notebook. The threshold work in particular is what would turn 79.9% accuracy into
   something decision-useful.
 - One narrative answer was written before its tree was plotted, so it reasons about
-  rules in general terms rather than the specific splits the model found.
+  rules in general terms rather than the specific splits the model found. That answer
+  also sits in a **code** cell rather than a markdown one, so a clean top-to-bottom run
+  halts there with `SyntaxError: unterminated string literal`. It is the only cell in
+  the repository that does not parse as Python.
