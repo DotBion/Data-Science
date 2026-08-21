@@ -60,7 +60,10 @@ leave:
 | `InternetService_Fiber optic` | 0.346 | `InternetService_No` | −0.92 |
 | `InternetService_No` | 0.038 | `Contract_One year` | −0.75 |
 | `Contract_One year` | 0.031 | `OnlineSecurity_Yes` | −0.37 |
-| `MonthlyCharges` | 0.029 | `TechSupport_Yes` | −0.33 |
+| `MonthlyCharges` | 0.029 | `PhoneService_Yes` | −0.33 |
+(`TechSupport_Yes` is next at −0.332, just behind `PhoneService_Yes` at −0.335 — the
+add-on-services reading holds, but `PhoneService_Yes` is the one that actually places
+fifth.)
 
 The tree concentrates almost 83% of its importance in two features; the regression
 spreads credit across contract length and add-on services. Both agree on the direction
@@ -100,10 +103,19 @@ which is exactly why the optimum sits well past the conservative cut.
 ### Individualised expected value
 
 The analysis above uses the *average* monthly charge for everyone, but a $118/month
-customer is worth far more to save than an $18/month one. Scoring each customer by
-their own expected value — their churn probability times their own annual revenue,
-minus the offer cost — and targeting in that order raised profit from **$589,000 to
-$813,000** on the same number of customers. Same model, same budget, better ranking.
+customer is worth far more to save than an $18/month one. Recomputing profit with each
+customer's own annual revenue raised the reported figure from **$589,000 to $813,000**
+across the same 2,917 customers.
+
+The framing is right but the code does not deliver it. The expected value is computed
+as `churn_probabilities * (avg_monthly_charge * 12) - offer_cost` — the *average*
+charge, not the individual one. Multiplying every probability by the same constant is a
+monotone transform, so sorting by that expected value produces exactly the probability
+ranking it was supposed to improve on. Both policies target an identical set of
+customers in an identical order. The entire $224,000 difference comes from the benefit
+*accounting*, not from a better *decision*. Doing this properly means putting
+`df['MonthlyCharges']` into the expected value itself, which is what the exercise asked
+for.
 
 ## Results summary
 
@@ -121,11 +133,11 @@ On the 1,407-customer test set:
 | Profit-curve optimum | 42.4% | **~$114,900** |
 
 The budgeted 25% falls short of the peak on that curve, which is the substance of the
-recommendation. Ranking by individualised expected value rather than by probability
-alone adds roughly another third on top, and against a random-targeting baseline of the
-same size — scaled to a 100,000-customer book — the model's advantage runs into the
-millions. Those last two figures come from cells with the scale inconsistencies noted
-below, so treat their direction as sound and their magnitude as indicative.
+recommendation. Two further figures — the individualised expected-value result and the
+comparison against random targeting scaled to a 100,000-customer book — come from cells
+with the defects noted below: they rank by probability rather than by individual value,
+and they index profit arrays the notebook never defines. Treat the direction as sound
+and the magnitudes as unusable.
 
 ## What I learned
 
@@ -151,11 +163,18 @@ below, so treat their direction as sound and their magnitude as indicative.
   against `X_test`, so the reported 0.830 is optimistically biased and not directly
   comparable to the tree's cross-validated 0.833. The tree was tuned correctly with
   `GridSearchCV`; the regression should have been too.
-- **Mixed denominators in the pitch calculation.** The final profit comparison indexes
-  a profit array computed over all 7,032 rows using a customer count derived from the
-  1,407-row test set. The *shape* of the argument (the optimum is near 42%, not 25%)
-  is supported by the profit curve, but the specific dollar deltas in that cell are not
-  reliable and should be recomputed on a single consistent population.
+- **The pitch cells depend on variables the notebook never defines.** Cells 55 and 60
+  read `profits` and `thresholds`, and neither is assigned anywhere in the notebook —
+  the only `profits` in the file is a local inside `plot_profit_curve`. They are
+  leftover state from a cell that was edited or deleted, so the notebook raises
+  `NameError` on a clean top-to-bottom run and every number those cells print
+  ($148,299.56, $589,188.38, 2,917 customers, the $8.1M scaled comparison) is
+  unreproducible from the file as committed.
+- **Mixed denominators in the pitch calculation.** On top of that, the comparison
+  indexes a 7,032-row profit array with a customer count derived from the 1,407-row
+  test set. The *shape* of the argument (the optimum is near 42%, not 25%) is supported
+  by the profit curve, but the dollar deltas in that cell should be recomputed on a
+  single consistent population.
 - **Profit is evaluated partly on training data.** Some cells score `best_model` on the
   full dataframe, including rows the model was fit on, which inflates the result.
 - An early correlation heatmap raises a `KeyError` because it references the original
@@ -163,5 +182,7 @@ below, so treat their direction as sound and their magnitude as indicative.
 - Several exploratory cells re-fit trees with `criterion="entropy"` and hand-rolled
   loops that duplicate the grid search; they are scratch work, not part of the final
   argument.
+- The `DecisionTreeClassifier` instances are constructed without `random_state`, so the
+  tree figures are not exactly reproducible between runs.
 - The working draft notebook stops after question 3 and is superseded by the main
   notebook throughout.
