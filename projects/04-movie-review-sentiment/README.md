@@ -68,10 +68,18 @@ and the model is wrong, for a reason no amount of extra training data fixes. Bag
 representations cannot represent irony, because the sentiment is carried by the
 relationship between the words and the rating, not by the words.
 
+That is my reading now. The notebook reached the opposite conclusion at the time —
+see **Known issues**.
+
 Cross-checking with **VADER**, a lexicon and rule-based sentiment analyser that knows
-nothing about this training set, gave an independent read on the same text. Two
-methods failing the same way on the same review is strong evidence that the difficulty
-is in the language rather than in either model.
+nothing about this training set, gave an independent read on the same text — and it
+disagreed with my classifier. VADER scored the review `compound: 0.9745`, strongly
+positive, siding with the human label. The two methods do not fail alike: the
+supervised model reads the review as negative, the lexicon reads it as positive.
+VADER is not decoding the irony so much as counting the review's many positive tokens
+("laughing", "funny", "worth watching"), but the disagreement is the useful result —
+it corroborates that the label is defensible and that my model, not the annotator, is
+what got this review wrong.
 
 ### Explainability
 
@@ -101,6 +109,13 @@ sarcastic review's score to the individual tokens that drove it. Being able to p
 - `SentimentIntensityAnalyzer` is used without an explicit
   `from nltk.sentiment.vader import SentimentIntensityAnalyzer` in the notebook; the
   cell only works if the name is already bound in the session.
+- **The notebook's written verdict is the opposite of this README's.** The
+  error-analysis cell concludes "It is a bad review" and blames "a potential labeling
+  issue"; the VADER cell then contradicts that same cell in the other direction. I now
+  think the label is correct and the model is wrong, but the notebook prose was never
+  reconciled and is left as written.
+- `show_prediction` is only ever applied to the XGBoost model, not to the logistic
+  regression, even though the surrounding discussion covers both.
 - The error-analysis cell reuses the variable `y_pred_prob`, which at that point holds
   the logistic regression's predictions even though the surrounding narrative discusses
   both models.
