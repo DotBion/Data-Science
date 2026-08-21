@@ -11,7 +11,7 @@ I started the course thinking the job was to make a number go up — accuracy, t
 I finished it convinced that the job is to make a **decision** better, and that the
 model is one input to that decision among several.
 
-The clearest illustration is project 03. Three models scored between 0.81 and 0.83
+The clearest illustration is project 03. Three models scored between 0.805 and 0.833
 AUC, a spread narrow enough to be noise. Choosing between them changed almost nothing.
 Changing the *targeting threshold* from the budgeted 25% of customers to the
 profit-maximising 42% changed the outcome enormously — and the threshold is not a
@@ -25,7 +25,7 @@ That reordering of priorities is the main thing I took away.
 ## Data preparation
 
 **Missing data and invalid data are separate problems.** The no-show dataset has zero
-nulls and 204 impossible rows: a negative age, appointments scheduled after they
+nulls and 205 impossible rows: a negative age, appointments scheduled after they
 occurred, and a documented 0/1 flag containing values up to 4. `isna().sum()` finds
 none of these. Histograms, `value_counts()`, `describe()`, and min/max checks against
 what the values *physically mean* find all of them.
@@ -144,10 +144,14 @@ gets a dollar value:
 
 Element-wise multiply, sum, and the confusion matrix becomes a profit figure.
 
-**Then sweep the threshold and plot profit against the fraction of customers targeted.**
-The curve rises as you reach genuine churners, peaks, and falls as you start paying
-$200 to people who were never going to leave. The peak is the answer, and here it sat
-near 42% — well past the 25% that had been budgeted.
+**Then improve the ranking — and check that you actually did.** Expected value per
+customer should be `P(churn) × that customer's annual_revenue − offer_cost`, so that a
+$118/month customer outranks an $18/month one at equal churn risk. I wrote the formula
+with the *population average* revenue instead, which is a constant: the ranking that
+came out was the plain probability ranking, unchanged. The profit figure still rose by
+about a third, but that came from valuing the saved customers correctly after the fact,
+not from targeting different people. Reporting it as a ranking improvement was the
+error; a ranking change you cannot point to in the sort order did not happen.
 
 **Then improve the ranking.** Using each customer's own monthly charges instead of the
 population average, expected value per customer becomes
