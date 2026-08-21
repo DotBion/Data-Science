@@ -53,9 +53,16 @@ pip install -r requirements.txt
 jupyter lab
 ```
 
-The datasets are not committed to this repository — they are hosted externally and
-each notebook links to its own source. Project 01 expects `College.csv` in the
-working directory; the rest download their data at runtime.
+The datasets are not committed to this repository (`.gitignore` excludes `*.csv`) — they
+are hosted externally and each notebook links to its own source. Projects 01 and 02
+expect a file in the working directory: `College.csv` and `SHMC_NoShows.csv`
+respectively. Projects 03 and 04 download their data at runtime.
+
+Two caveats. The download link for project 02's data is in the notebook's own markdown
+and its query string is malformed (`?download=export&id=...` should be
+`?export=download&id=...`). And project 01's second cell runs
+`from google.colab import files`, which raises `ModuleNotFoundError` outside Colab —
+comment that import out, or run project 01 via its Colab badge.
 
 Project 04 additionally needs a few NLTK corpora, which its first cell downloads:
 `punkt`, `punkt_tab`, `stopwords`, `wordnet`, `omw-1.4`, and `vader_lexicon`.
